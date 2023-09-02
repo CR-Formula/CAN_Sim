@@ -1,10 +1,5 @@
-// CAN Send Example
-//
-
 #include <SPI.h>
 #include <mcp_can.h>
-#include <stdio.h>
-#include <stdlib.h>
 
 MCP_CAN CAN0(10); // Set CS to pin 10
 
@@ -22,10 +17,9 @@ void setup() {
       MCP_NORMAL); // Change to normal mode to allow messages to be transmitted
 }
 
-byte data[8] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
+byte data[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 
-void packet1(double rpm, double tps, double fuelOpenTime,
-             double ignistionAngle) {
+void packet1(float rpm, float tps, float fuelOpenTime, float ignistionAngle) {
 
   data[0] = (rpm / 2) / 256;
   data[1] = (rpm / 2);
@@ -37,7 +31,7 @@ void packet1(double rpm, double tps, double fuelOpenTime,
   data[7] = ignistionAngle / 2;
 }
 
-void packet2(double lam) {
+void packet2(float lam) {
   data[0] = 0;
   data[1] = 0;
   data[2] = 0;
@@ -49,7 +43,13 @@ void packet2(double lam) {
   data[8] = 0;
 }
 
-void packet6(double airT, double cT) {
+void packet3() {}
+
+void packet4() {}
+
+void packet5() {}
+
+void packet6(float airT, float cT) {
   data[0] = 0;
   data[0] = 0;
   data[2] = (airT / 2) / 256;
@@ -59,6 +59,8 @@ void packet6(double airT, double cT) {
   data[0] = 0;
   data[0] = 0;
 }
+
+void packet7() {}
 
 void SendData() {
   packet1(100.000, 28.0000, 25.0000, 15.0000);
@@ -71,7 +73,7 @@ void SendData() {
   if (sndStat1 == CAN_OK & sndStat2 == CAN_OK & sndStat3 == CAN_OK) {
     Serial.println("Messages Sent Successfully!");
   } else {
-    Serial.println("Error Sending Message...");
+    Serial.println("Error Sending Messages...");
   }
 }
 
