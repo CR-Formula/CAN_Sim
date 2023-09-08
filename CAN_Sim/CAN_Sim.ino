@@ -3,14 +3,7 @@
 
 MCP_CAN CAN0(10);     // Initialize CAN
 
-int input[6][4] = {
-  {10000, 40, 10, 50},
-  {0, 0, 5, 0},
-  {0, 0, 0, 0},
-  {0, 0, 0, 0},
-  {0, 0, 0, 0},
-  {0, 500, 500, 0}
-};
+int input[6][4] = {{10000, 40, 10, 50}, {0, 0, 5, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 500, 500, 0}};
 
 void setup()
 {
@@ -27,13 +20,15 @@ void loop() {
     int packetHexNum = 0x0CFFF048 + (packetNum * 256);
     int highByte[4];
     int lowByte[4];
-    for (int i = 0; i < 4; i++){
+    for (int i = 0; i < 4; i++)
+    {
       highByte[i] = input[packetNum][i] / 256; //rpm highByte, tps highByte, etc...
       lowByte[i] = input[packetNum][i] % 256; //rpm lowByte, tps lowByte, etc...
     }
     byte output[8]; //rpm lowByte, rpm highByte, etc...
     int c = 0; //new counter
-    for (int i = 0; i < 4; i++){
+    for (int i = 0; i < 4; i++)
+    {
       output[c] = lowByte[i]; //fills even numbers of array with lowBytes
       output[c + 1] = highByte[i]; //fills odd numbers of arrays with highBytes
       c += 2;
