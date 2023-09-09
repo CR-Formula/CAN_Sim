@@ -18,11 +18,11 @@ void packet1(double rpm, double tps, double fuelOpenTime, double ignistionAngle)
 
   data[0] = rpm % 256;
   data[1] = rpm / 256;
-  data[2] = tps % 2;
+  data[2] = tps % 256;
   data[3] = tps / 256;
-  data[4] = fuelOpenTime % 2;
+  data[4] = fuelOpenTime % 256;
   data[5] = fuelOpenTime / 256;
-  data[6] = ignistionAngle % 2;
+  data[6] = ignistionAngle % 256;
   data[7] = ignistionAngle / 256;
   for(int i = 0; i < 8; i++ ){
     Serial.println(data[i]);
@@ -34,7 +34,7 @@ void packet2(double lam) {
   data[1] = 0;
   data[2] = 0;
   data[3] = 0;
-  data[4] = lam % 2;
+  data[4] = lam % 256;
   data[5] = lam /  256;
   data[6] = 0;
   data[7] = 0;
@@ -51,7 +51,7 @@ void packet6(double airT, double cT) {
   data[0] = 0;
   data[2] = airT % 256;
   data[3] = airT / 256;
-  data[4] = cT %256);
+  data[4] = cT %256;
   data[5] = cT / 256;
   data[0] = 0;
   data[0] = 0;
