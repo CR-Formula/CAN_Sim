@@ -25,7 +25,7 @@ void setup() {
 }
 
 void loop() {
-  if (CAN0.sendMsgBuf(0x100, 0, 8, &data) == CAN_OK) // Format CAN message with ID 100
+  if (CAN0.sendMsgBuf(0x100, 0, 8, data) == CAN_OK) // Format CAN message with ID 100
     Serial.println("Message Sent Successfully!");
   else
     Serial.println("Error Sending Message...");
