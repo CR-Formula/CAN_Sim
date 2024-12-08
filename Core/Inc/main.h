@@ -45,8 +45,6 @@ extern "C" {
 #include "timer.h"
 #include "uart.h"
 
-#define DEBUG
-
 /* Macros  ------------------------------------------------------------------*/
 #define STATUS_LED_PIN              13
 

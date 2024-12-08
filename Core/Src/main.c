@@ -67,6 +67,7 @@ void CAN_Task1() {
       tFrame.data[i]++;
     }
     CAN_Transmit(CAN1, &tFrame);
+    vTaskDelayUntil(&xLastWakeTime, CANFrequency);
   }
 }
 
@@ -86,12 +87,13 @@ void CAN_Task2() {
       tFrame.data[i]++;
     }
     CAN_Transmit(CAN1, &tFrame);
+    vTaskDelayUntil(&xLastWakeTime, CANFrequency);
   }
 }
 
 void CAN_Task3() {
   volatile CAN_Frame tFrame = {
-    .id = 0x069,
+    .id = 0x548,
     .dlc = 8,
     .rtr = CAN_RTR_Data,
     .data = {0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8}
@@ -105,6 +107,7 @@ void CAN_Task3() {
       tFrame.data[i]++;
     }
     CAN_Transmit(CAN1, &tFrame);
+    vTaskDelayUntil(&xLastWakeTime, CANFrequency);
   }
 }
 
