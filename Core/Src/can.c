@@ -28,14 +28,14 @@ CAN_Status CAN1_Init() {
     RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
     RCC->APB1ENR |= RCC_APB1ENR_CAN1EN;
 
-    // Setup CAN GPIO Pins for AF, Open Drain, and Very High Speed
+    // Setup CAN GPIO Pins for CAN Alternate Function
     GPIOA->MODER &= ~GPIO_MODER_MODE11 & ~GPIO_MODER_MODE12;
     GPIOA->MODER |= (0x2 << GPIO_MODER_MODE11_Pos) | (0x2 << GPIO_MODER_MODE12_Pos);
-    GPIOA->OTYPER |= GPIO_OTYPER_OT12;
-    GPIOA->OTYPER &= ~GPIO_OTYPER_OT11;
-    GPIOA->PUPDR |= (0x1 << GPIO_PUPDR_PUPD12_Pos);
-    GPIOA->PUPDR &= ~GPIO_PUPDR_PUPD11;
+    GPIOA->OTYPER &= ~GPIO_OTYPER_OT11 & ~GPIO_OTYPER_OT12;
+    GPIOA->PUPDR &= ~GPIO_PUPDR_PUPD11 & ~GPIO_PUPDR_PUPD12;
+    GPIOA->PUPDR |= (0x1 << GPIO_PUPDR_PUPD11_Pos);
     GPIOA->AFR[1] |= (0x9 << GPIO_AFRH_AFSEL11_Pos) | (0x9 << GPIO_AFRH_AFSEL12_Pos);
+    GPIOA->OSPEEDR &= ~GPIO_OSPEEDR_OSPEED11 & ~GPIO_OSPEEDR_OSPEED12;
     GPIOA->OSPEEDR |= (0x2 << GPIO_OSPEEDR_OSPEED11_Pos) | (0x2 << GPIO_OSPEEDR_OSPEED12_Pos);
 
     // Initialize the CAN Peripheral
@@ -50,6 +50,9 @@ CAN_Status CAN1_Init() {
     CAN1->MCR &= ~CAN_MCR_TXFP & ~CAN_MCR_RFLM & ~CAN_MCR_TTCM 
                 & ~CAN_MCR_ABOM & ~CAN_MCR_TXFP;
     CAN1->MCR |= CAN_MCR_AWUM | CAN_MCR_NART | CAN_MCR_DBF;
+
+    // Enable RX Interrupts
+    CAN1->IER |= CAN_IER_FMPIE0 | CAN_IER_FMPIE1;
     
     // Configure CAN1 Baud Rate
     // http://www.bittiming.can-wiki.info/
@@ -75,16 +78,16 @@ CAN_Status CAN_Filters_Init() {
     CAN1->FS1R &= ~CAN_FS1R_FSC_Msk ; // Set Filters to Dual 16-bit mode
 
     // Create Filters for IDs and set masks to match IDs
-    CAN1->sFilterRegister[0].FR1 |= 0x048UL << CAN_F0R1_FB5_Pos;
+    CAN1->sFilterRegister[0].FR1 = 0x048 << CAN_F0R1_FB5_Pos;
     CAN1->FFA1R &= ~CAN_FFA1R_FFA0; // Set Filter 0 to FIFO 0
 
-    CAN1->sFilterRegister[0].FR1 |= 0x148UL << CAN_F0R1_FB21_Pos;
+    CAN1->sFilterRegister[0].FR1 |= 0x148 << CAN_F0R1_FB21_Pos;
     CAN1->FFA1R |= CAN_FFA1R_FFA1; // Set Filter 1 to FIFO 1
 
-    CAN1->sFilterRegister[1].FR1 |= 0x248UL << CAN_F0R1_FB9_Pos;
+    CAN1->sFilterRegister[1].FR1 = 0x248 << CAN_F0R1_FB9_Pos;
     CAN1->FFA1R |= CAN_FFA1R_FFA2; // Set Filter 2 to FIFO 1
 
-    CAN1->sFilterRegister[1].FR1 |= 0x548UL << CAN_F0R1_FB21_Pos;
+    CAN1->sFilterRegister[1].FR1 |= 0x548 << CAN_F0R1_FB21_Pos;
     CAN1->FFA1R |= CAN_FFA1R_FFA2; // Set Filter 2 to FIFO 1
 
     // Enable Filters
@@ -177,4 +180,3 @@ CAN_Status CAN_Receive(CAN_TypeDef* CAN, CAN_Frame* frame) {
         return CAN_Fifo_Error;
     }
 }
-    

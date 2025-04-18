@@ -27,7 +27,7 @@ void main() {
   Task_Status &= xTaskCreate(Status_LED, "Status_Task", 128, NULL, 5, NULL);
   Task_Status &= xTaskCreate(CAN_Task1, "CAN_Task", 256, NULL, 1, NULL);
   Task_Status &= xTaskCreate(CAN_Task2, "CAN_Task", 256, NULL, 2, NULL);
-  Task_Status &= xTaskCreate(CAN_Task3, "CAN_Task", 256, NULL, 3, NULL);
+  // Task_Status &= xTaskCreate(CAN_Task3, "CAN_Task", 256, NULL, 3, NULL);
 #ifdef DEBUG
   Task_Status &= xTaskCreate(Collect_Stats, "Stats_Task", 512, NULL, 5, NULL);
 #endif
@@ -72,21 +72,14 @@ void CAN_Task1() {
 }
 
 void CAN_Task2() {
-  volatile CAN_Frame tFrame = {
-    .id = 0x148,
-    .dlc = 8,
-    .rtr = CAN_RTR_Data,
-    .data = {0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8}
-  };
+  CAN_Frame rxFrame;
+  CAN_Status status = CAN_OK;
 
   const TickType_t CANFrequency = 50;
   TickType_t xLastWakeTime = xTaskGetTickCount();
 
   while(1) {
-    for (uint8_t i = 0; i < 8; i++) {
-      tFrame.data[i]++;
-    }
-    CAN_Transmit(CAN1, &tFrame);
+    status = CAN_Receive(CAN1, &rxFrame);
     vTaskDelayUntil(&xLastWakeTime, CANFrequency);
   }
 }
